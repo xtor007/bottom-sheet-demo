@@ -11,6 +11,8 @@ let collapsedTop = 0
 let middleTop = 0
 let expandedTop = 80
 
+const BUTTON_OFFSET = 16 // расстояние от верхней границы кнопки до sheet
+
 const onResize = () => {
   const h = window.innerHeight
   collapsedTop = h - 136
@@ -62,7 +64,7 @@ const handleTouchEnd = (e) => {
 const animateTo = (target) => {
   currentTop.value = target
   sheet.value.style.transition = 'all 0.35s cubic-bezier(0.25, 1.0, 0.3, 1)'
-  floatingButton.value.style.transition = 'opacity 0.35s ease'
+  floatingButton.value.style.transition = 'bottom 0.35s cubic-bezier(0.25, 1.0, 0.3, 1), opacity 0.35s ease'
   updateLayout(target)
   setTimeout(() => {
     sheet.value.style.transition = ''
@@ -71,15 +73,21 @@ const animateTo = (target) => {
 }
 
 const updateLayout = (top) => {
+  // верх sheet
   sheet.value.style.top = `${top}px`
 
+  // отступы боковые и нижний (как в iOS)
   const fraction = (top - expandedTop) / (collapsedTop - expandedTop)
   const inset = 16 * fraction
-
   sheet.value.style.left = `${inset}px`
   sheet.value.style.right = `${inset}px`
   sheet.value.style.bottom = `${inset}px`
 
+  // позиция кнопки: привязка к sheet
+  const buttonBottom = window.innerHeight - top + BUTTON_OFFSET
+  floatingButton.value.style.bottom = `${buttonBottom}px`
+
+  // alpha кнопки
   floatingButton.value.style.opacity = Math.min(fraction * 2, 1)
 }
 </script>
@@ -126,10 +134,14 @@ const updateLayout = (top) => {
   right: 20px;
   width: 50px;
   height: 50px;
-  bottom: calc(100% - 80px - 20px);
   border-radius: 25px;
   background: white;
   border: none;
   font-size: 22px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 </style>
