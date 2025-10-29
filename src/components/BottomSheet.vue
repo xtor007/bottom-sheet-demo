@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 
 const sheet = ref(null)
 const floatingButton = ref(null)
+const spacer = ref(null)
 
 const currentTop = ref(0)
 let startY = 0
@@ -73,18 +74,28 @@ const animateTo = (target) => {
 }
 
 const updateLayout = (top) => {
-  sheet.value.style.top = `${top}px`
-
+  // 0.0 = expanded, 1.0 = collapsed
   const fraction = (top - expandedTop) / (collapsedTop - expandedTop)
+
+  // expanded = 0, middle = 8, collapsed = 16
+  const bottomInset = 16 * fraction
+
+  const visibleTop = top + bottomInset
+  sheet.value.style.top = `${visibleTop}px`
+
   const inset = 16 * fraction
   sheet.value.style.left = `${inset}px`
   sheet.value.style.right = `${inset}px`
 
-  const buttonBottom = window.innerHeight - top + BUTTON_OFFSET
+  spacer.value.style.height = `${16 * fraction}px`
+
+  const buttonBottom = window.innerHeight - visibleTop + BUTTON_OFFSET
   floatingButton.value.style.bottom = `${buttonBottom}px`
 
+  // expanded = 1, middle = 1, collapsed = 0
   floatingButton.value.style.opacity = Math.min(fraction * 2, 1)
 }
+
 </script>
 
 <template>
@@ -95,20 +106,37 @@ const updateLayout = (top) => {
        @touchstart="handleTouchStart"
        @touchmove="handleTouchMove"
        @touchend="handleTouchEnd">
-    <div class="grab"></div>
+
+    <div class="sheet-content">
+      <div class="grab"></div>
+    </div>
+    <div class="spacer" ref="spacer"></div>
   </div>
 
   <button class="floating" ref="floatingButton">🛰️</button>
 </template>
 
+
 <style>
 .sheet {
   position: fixed;
   bottom: 0;
-  border-radius: 60px;
-  background: white;
-  overflow: hidden;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-content {
+  flex: 1;
+  background: white;
+  border-radius: 60px;
+  overflow: hidden;
+  padding: 12px 0;
+}
+
+.spacer {
+  width: 100%;
+  height: 0;
 }
 
 .grab {
