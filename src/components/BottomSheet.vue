@@ -11,7 +11,7 @@ let collapsedTop = 0
 let middleTop = 0
 let expandedTop = 80
 
-const BUTTON_OFFSET = 16 // расстояние от верхней границы кнопки до sheet
+const BUTTON_OFFSET = 16
 
 const onResize = () => {
   const h = window.innerHeight
@@ -73,27 +73,22 @@ const animateTo = (target) => {
 }
 
 const updateLayout = (top) => {
-  // верх sheet
   sheet.value.style.top = `${top}px`
 
-  // отступы боковые и нижний (как в iOS)
   const fraction = (top - expandedTop) / (collapsedTop - expandedTop)
   const inset = 16 * fraction
   sheet.value.style.left = `${inset}px`
   sheet.value.style.right = `${inset}px`
-  sheet.value.style.bottom = `${inset}px`
 
-  // позиция кнопки: привязка к sheet
   const buttonBottom = window.innerHeight - top + BUTTON_OFFSET
   floatingButton.value.style.bottom = `${buttonBottom}px`
 
-  // alpha кнопки
   floatingButton.value.style.opacity = Math.min(fraction * 2, 1)
 }
 </script>
 
 <template>
-  <div class="background"></div>
+  <img src="/map.png" alt="map" style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 0;">
 
   <div class="sheet"
        ref="sheet"
@@ -106,19 +101,14 @@ const updateLayout = (top) => {
   <button class="floating" ref="floatingButton">🛰️</button>
 </template>
 
-<style scoped>
-.background {
-  position: fixed;
-  inset: 0;
-  background: url('/map.png') center/cover no-repeat;
-}
-
+<style>
 .sheet {
   position: fixed;
-  height: calc(100% - 80px);
+  bottom: 0;
   border-radius: 60px;
   background: white;
   overflow: hidden;
+  z-index: 1;
 }
 
 .grab {
@@ -138,10 +128,9 @@ const updateLayout = (top) => {
   background: white;
   border: none;
   font-size: 22px;
-
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 </style>
