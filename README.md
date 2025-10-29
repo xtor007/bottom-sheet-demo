@@ -1,5 +1,20 @@
-# Vue 3 + Vite
+# Bottom Sheet Component
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A simple Vue 3 bottom sheet with drag gestures, multiple positions (collapsed / middle / expanded), and a floating button above a map.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Installation
+
+```bash
+npm install
+```
+
+## Running in Development
+
+```bash
+npm run dev
+```
+
+
+
+https://github.com/user-attachments/assets/23f6c61d-41f5-4aa0-8041-db63c96780df
+
